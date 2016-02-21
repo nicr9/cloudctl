@@ -4,6 +4,14 @@
 
 It is currently in very early development so there is almost nothin to document here. Come back soon!
 
+## Installation
+
+If you have already set up Go and your $GOPATH then you just need to install like so:
+
+```bash
+go install github.com/nicr9/cloudctl
+```
+
 ## Usage
 
 `cloudctl` requires you to create a config file for each cloud you interact with.
