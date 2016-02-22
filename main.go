@@ -7,6 +7,7 @@ import (
 
 var (
 	default_config = `platform: aws
+region: us-west-1
 `
 	cloud_name       = kingpin.Flag("cloud", "Name of public/private cloud").Short('c').Default("default").String()
 	cmd_init         = kingpin.Command("init", "Create a configuration file for a new cloud.")
