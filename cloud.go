@@ -31,21 +31,12 @@ func NewAws(config Config) Aws {
 }
 
 func (a Aws) listInstances() {
-	params := &ec2.DescribeInstancesInput{
-		Filters: []*ec2.Filter{
-			&ec2.Filter{
-				Values: []*string{
-					aws.String("running"),
-					aws.String("pending"),
-				},
-			},
-		},
-	}
+	params := &ec2.DescribeInstancesInput{}
 
 	resp, _ := a.svc.DescribeInstances(params)
 	for idx, _ := range resp.Reservations {
 		for _, inst := range resp.Reservations[idx].Instances {
-			fmt.Println(inst.InstanceId)
+			fmt.Println(*inst.InstanceId)
 		}
 	}
 }
