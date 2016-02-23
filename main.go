@@ -25,7 +25,7 @@ func main() {
 	case "init":
 		config_path := ConfigPath(*cloud_name)
 		if _, err := os.Stat(config_path); os.IsNotExist(err) {
-			WriteConfig(*config_path, default_config)
+			WriteConfig(config_path, default_config)
 		}
 	case "print-config":
 		config := GetConfig(*cloud_name)
