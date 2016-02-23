@@ -53,8 +53,7 @@ func GetConfig(cloud_name string) Config {
 	return result
 }
 
-func WriteConfig(cloud_name, config_str string) {
-	config_path := ConfigPath(cloud_name)
+func WriteConfig(config_path, config_str string) {
 	ioutil.WriteFile(config_path, []byte(config_str), 0600)
 }
 

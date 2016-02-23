@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"gopkg.in/alecthomas/kingpin.v2"
+	"os"
 )
 
 var (
@@ -22,7 +23,10 @@ func main() {
 	// Handle cli args
 	switch kingpin.Parse() {
 	case "init":
-		WriteConfig(*cloud_name, default_config)
+		config_path := ConfigPath(*cloud_name)
+		if _, err := os.Stat(config_path); os.IsNotExist(err) {
+			WriteConfig(*config_path, default_config)
+		}
 	case "print-config":
 		config := GetConfig(*cloud_name)
 		fmt.Printf("%+v\n", config)
