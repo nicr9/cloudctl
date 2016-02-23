@@ -12,7 +12,7 @@ region: us-west-1
 `
 	cloud_name       = kingpin.Flag("cloud", "Name of public/private cloud").Short('c').Default("default").String()
 	cmd_init         = kingpin.Command("init", "Create a configuration file for a new cloud.")
-	cmd_print_config = kingpin.Command("print-config", "Print the cloudctl configuration for this cloud.")
+	cmd_config_print = kingpin.Command("config-print", "Print the cloudctl configuration for this cloud.")
 	cmd_ls           = kingpin.Command("ls", "List the instances in this cloud.")
 )
 
@@ -27,7 +27,7 @@ func main() {
 		if _, err := os.Stat(config_path); os.IsNotExist(err) {
 			WriteConfig(config_path, default_config)
 		}
-	case "print-config":
+	case "config-print":
 		config := GetConfig(*cloud_name)
 		fmt.Printf("%+v\n", config)
 	case "ls":
