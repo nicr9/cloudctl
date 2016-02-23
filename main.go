@@ -28,7 +28,11 @@ func main() {
 		fmt.Printf("%+v\n", config)
 	case "ls":
 		config := GetConfig(*cloud_name)
-		cloud := NewCloud(config)
+		cloud, err := NewCloud(config)
+		if err != nil {
+			fmt.Println("Couldn't create cloud interface.")
+			fmt.Println(err)
+		}
 		cloud.listInstances()
 	}
 }
