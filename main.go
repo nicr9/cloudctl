@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"gopkg.in/alecthomas/kingpin.v2"
 	"os"
+	"os/exec"
 )
 
 var (
@@ -13,6 +14,7 @@ region: us-west-1
 	cloud_name       = kingpin.Flag("cloud", "Name of public/private cloud").Short('c').Default("default").String()
 	cmd_init         = kingpin.Command("init", "Create a configuration file for a new cloud.")
 	cmd_config_print = kingpin.Command("config-print", "Print the cloudctl configuration for this cloud.")
+	cmd_config_edit  = kingpin.Command("config-edit", "Edit the cloudctl configuration for this cloud with $EDITOR.")
 	cmd_ls           = kingpin.Command("ls", "List the instances in this cloud.")
 )
 
@@ -30,6 +32,15 @@ func main() {
 	case "config-print":
 		config := GetConfig(*cloud_name)
 		fmt.Printf("%+v\n", config)
+	case "config-edit":
+		config_path := ConfigPath(*cloud_name)
+		cmd := exec.Command("vim", config_path)
+		cmd.Stdin = os.Stdin
+		cmd.Stdout = os.Stdout
+		err := cmd.Run()
+		if err != nil {
+			fmt.Println(err)
+		}
 	case "ls":
 		config := GetConfig(*cloud_name)
 		cloud, err := NewCloud(config)
