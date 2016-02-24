@@ -43,12 +43,24 @@ func (a Aws) listInstances() {
     total :=0
 	for idx, _ := range resp.Reservations {
 		for _, inst := range resp.Reservations[idx].Instances {
+            // Replace public ip with "-" if instance doesn't have one
+            publicIp := "-"
+            if inst.PublicIpAddress != nil {
+                publicIp = *inst.PublicIpAddress
+            }
+
+            // Replace private ip with "-" if instance doesn't have one
+            privateIp := "-"
+            if inst.PrivateIpAddress != nil {
+                privateIp = *inst.PrivateIpAddress
+            }
+
 			fmt.Fprintf(
 				w,
 				"%s\t%s\t%s\n",
 				*inst.InstanceId,
-				*inst.PublicIpAddress,
-				*inst.PrivateIpAddress,
+				publicIp,
+				privateIp,
 			)
             total++
 		}
