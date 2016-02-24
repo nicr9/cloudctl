@@ -41,20 +41,20 @@ func (a Aws) listInstances() {
 	w.Init(os.Stdout, 0, 8, 0, '\t', 0)
 	fmt.Fprintln(w, "InstanceID\tPublic IP\tPrivateIP")
 	fmt.Fprintln(w, "---\t---\t---")
-    total :=0
+	total := 0
 	for idx, _ := range resp.Reservations {
 		for _, inst := range resp.Reservations[idx].Instances {
-            // Replace public ip with "-" if instance doesn't have one
-            publicIp := "-"
-            if inst.PublicIpAddress != nil {
-                publicIp = *inst.PublicIpAddress
-            }
+			// Replace public ip with "-" if instance doesn't have one
+			publicIp := "-"
+			if inst.PublicIpAddress != nil {
+				publicIp = *inst.PublicIpAddress
+			}
 
-            // Replace private ip with "-" if instance doesn't have one
-            privateIp := "-"
-            if inst.PrivateIpAddress != nil {
-                privateIp = *inst.PrivateIpAddress
-            }
+			// Replace private ip with "-" if instance doesn't have one
+			privateIp := "-"
+			if inst.PrivateIpAddress != nil {
+				privateIp = *inst.PrivateIpAddress
+			}
 
 			fmt.Fprintf(
 				w,
@@ -63,11 +63,11 @@ func (a Aws) listInstances() {
 				publicIp,
 				privateIp,
 			)
-            total++
+			total++
 		}
 	}
 	w.Flush()
-    fmt.Printf("---\nFound %d instances.\n", total)
+	fmt.Printf("---\nFound %d instances.\n", total)
 }
 
 func (a Aws) showInstance(instanceId string) {
@@ -77,12 +77,11 @@ func (a Aws) showInstance(instanceId string) {
 	for idx, _ := range resp.Reservations {
 		for _, inst := range resp.Reservations[idx].Instances {
 			fmt.Printf("%#v\n", inst)
-            break
+			break
 		}
-        break
+		break
 	}
 }
-
 
 func NewCloud(config Config) (Cloud, error) {
 	switch config.Platform {
