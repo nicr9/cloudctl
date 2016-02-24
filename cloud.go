@@ -71,7 +71,16 @@ func (a Aws) listInstances() {
 }
 
 func (a Aws) showInstance(instanceId string) {
-	params := &ec2.DescribeInstancesInput{}
+	params := &ec2.DescribeInstancesInput{
+		Filters: []*ec2.Filter{
+			&ec2.Filter{
+				Name: aws.String("instance-id"),
+				Values: []*string{
+					&instanceId,
+				},
+			},
+		},
+	}
 
 	resp, _ := a.svc.DescribeInstances(params)
 	for idx, _ := range resp.Reservations {
