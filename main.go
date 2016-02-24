@@ -16,6 +16,9 @@ region: us-west-1
 	cmd_config_print = kingpin.Command("config-print", "Print the cloudctl configuration for this cloud.")
 	cmd_config_edit  = kingpin.Command("config-edit", "Edit the cloudctl configuration for this cloud with $EDITOR.")
 	cmd_ls           = kingpin.Command("ls", "List the instances in this cloud.")
+
+	cmd_show         = kingpin.Command("show", "List details about an instance.")
+	show_instance    = cmd_show.Arg("instance", "Target instance id.").Required().String()
 )
 
 func main() {
@@ -49,5 +52,13 @@ func main() {
 			fmt.Println(err)
 		}
 		cloud.listInstances()
-	}
+	case cmd_show.FullCommand():
+		config := GetConfig(*cloud_name)
+		cloud, err := NewCloud(config)
+		if err != nil {
+			fmt.Println("Couldn't create cloud interface.")
+			fmt.Println(err)
+		}
+		cloud.showInstance(*show_instance)
+    }
 }

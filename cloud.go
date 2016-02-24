@@ -13,6 +13,7 @@ import (
 
 type Cloud interface {
 	listInstances()
+	showInstance(instanceId string)
 }
 
 type Aws struct {
@@ -68,6 +69,20 @@ func (a Aws) listInstances() {
 	w.Flush()
     fmt.Printf("---\nFound %d instances.\n", total)
 }
+
+func (a Aws) showInstance(instanceId string) {
+	params := &ec2.DescribeInstancesInput{}
+
+	resp, _ := a.svc.DescribeInstances(params)
+	for idx, _ := range resp.Reservations {
+		for _, inst := range resp.Reservations[idx].Instances {
+			fmt.Printf("%#v\n", inst)
+            break
+		}
+        break
+	}
+}
+
 
 func NewCloud(config Config) (Cloud, error) {
 	switch config.Platform {
