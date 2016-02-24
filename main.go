@@ -24,15 +24,15 @@ func main() {
 
 	// Handle cli args
 	switch kingpin.Parse() {
-	case "init":
+	case cmd_init.FullCommand():
 		config_path := ConfigPath(*cloud_name)
 		if _, err := os.Stat(config_path); os.IsNotExist(err) {
 			WriteConfig(config_path, default_config)
 		}
-	case "config-print":
+	case cmd_config_print.FullCommand():
 		config := GetConfig(*cloud_name)
 		fmt.Printf("%+v\n", config)
-	case "config-edit":
+	case cmd_config_edit.FullCommand():
 		config_path := ConfigPath(*cloud_name)
 		cmd := exec.Command("vim", config_path)
 		cmd.Stdin = os.Stdin
@@ -41,7 +41,7 @@ func main() {
 		if err != nil {
 			fmt.Println(err)
 		}
-	case "ls":
+	case cmd_ls.FullCommand():
 		config := GetConfig(*cloud_name)
 		cloud, err := NewCloud(config)
 		if err != nil {
