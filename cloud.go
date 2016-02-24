@@ -40,6 +40,7 @@ func (a Aws) listInstances() {
 	w.Init(os.Stdout, 0, 8, 0, '\t', 0)
 	fmt.Fprintln(w, "InstanceID\tPublic IP\tPrivateIP")
 	fmt.Fprintln(w, "---\t---\t---")
+    total :=0
 	for idx, _ := range resp.Reservations {
 		for _, inst := range resp.Reservations[idx].Instances {
 			fmt.Fprintf(
@@ -49,10 +50,11 @@ func (a Aws) listInstances() {
 				*inst.PublicIpAddress,
 				*inst.PrivateIpAddress,
 			)
+            total++
 		}
 	}
-	fmt.Fprintln(w)
 	w.Flush()
+    fmt.Printf("---\nFound %d instances.\n", total)
 }
 
 func NewCloud(config Config) (Cloud, error) {
