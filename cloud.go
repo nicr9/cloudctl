@@ -7,6 +7,8 @@ import (
 	"github.com/aws/aws-sdk-go/aws/credentials"
 	"github.com/aws/aws-sdk-go/aws/session"
 	"github.com/aws/aws-sdk-go/service/ec2"
+	"os"
+	"text/tabwriter"
 )
 
 type Cloud interface {
@@ -34,11 +36,23 @@ func (a Aws) listInstances() {
 	params := &ec2.DescribeInstancesInput{}
 
 	resp, _ := a.svc.DescribeInstances(params)
+	w := new(tabwriter.Writer)
+	w.Init(os.Stdout, 0, 8, 0, '\t', 0)
+	fmt.Fprintln(w, "InstanceID\tPublic IP\tPrivateIP")
+	fmt.Fprintln(w, "---\t---\t---")
 	for idx, _ := range resp.Reservations {
 		for _, inst := range resp.Reservations[idx].Instances {
-			fmt.Println(*inst.InstanceId)
+			fmt.Fprintf(
+				w,
+				"%s\t%s\t%s\n",
+				*inst.InstanceId,
+				*inst.PublicIpAddress,
+				*inst.PrivateIpAddress,
+			)
 		}
 	}
+	fmt.Fprintln(w)
+	w.Flush()
 }
 
 func NewCloud(config Config) (Cloud, error) {
