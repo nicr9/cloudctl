@@ -71,6 +71,15 @@ func (a Aws) listInstances() {
 }
 
 func (a Aws) showInstance(instanceId string) {
+	inst := a.getInstance(instanceId)
+	if inst != nil {
+		fmt.Printf("%#v\n", inst)
+	} else {
+		fmt.Printf("Couldn't find %s\n", instanceId)
+	}
+}
+
+func (a Aws) getInstance(instanceId string) *ec2.Instance {
 	params := &ec2.DescribeInstancesInput{
 		Filters: []*ec2.Filter{
 			&ec2.Filter{
@@ -85,11 +94,10 @@ func (a Aws) showInstance(instanceId string) {
 	resp, _ := a.svc.DescribeInstances(params)
 	for idx, _ := range resp.Reservations {
 		for _, inst := range resp.Reservations[idx].Instances {
-			fmt.Printf("%#v\n", inst)
-			break
+			return inst
 		}
-		break
 	}
+	return nil
 }
 
 func NewCloud(config Config) (Cloud, error) {
