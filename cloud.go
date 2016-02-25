@@ -86,7 +86,7 @@ func (a Aws) showInstance(instanceId string) {
 func (a Aws) sshInstance(username, instanceId string) {
 	inst := a.getInstance(instanceId)
 	if inst != nil {
-		userHost := fmt.Sprintf("%s@%s", username, inst.PrivateIpAddress)
+		userHost := fmt.Sprintf("%s@%s", username, *inst.PrivateIpAddress)
 
 		me, err := user.Current()
 		if err != nil {
