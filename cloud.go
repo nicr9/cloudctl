@@ -8,12 +8,16 @@ import (
 	"github.com/aws/aws-sdk-go/aws/session"
 	"github.com/aws/aws-sdk-go/service/ec2"
 	"os"
+	"os/exec"
+	"os/user"
+	"path"
 	"text/tabwriter"
 )
 
 type Cloud interface {
 	listInstances()
 	showInstance(instanceId string)
+	sshInstance(username, instanceId string)
 }
 
 type Aws struct {
@@ -74,6 +78,36 @@ func (a Aws) showInstance(instanceId string) {
 	inst := a.getInstance(instanceId)
 	if inst != nil {
 		fmt.Printf("%#v\n", inst)
+	} else {
+		fmt.Printf("Couldn't find %s\n", instanceId)
+	}
+}
+
+func (a Aws) sshInstance(username, instanceId string) {
+	inst := a.getInstance(instanceId)
+	if inst != nil {
+		userHost := fmt.Sprintf("%s@%s", username, inst.PrivateIpAddress)
+
+		me, err := user.Current()
+		if err != nil {
+			fmt.Println("Can't determine username details:", err)
+		}
+		keyFile := fmt.Sprintf(".ssh/%s.pem", *inst.KeyName)
+		keyFile = path.Join(me.HomeDir, keyFile)
+
+		if _, err := os.Stat(keyFile); os.IsNotExist(err) {
+			fmt.Println("Can't find private key:", keyFile)
+			return
+		}
+
+		cmd := exec.Command("ssh", "-i", keyFile, userHost)
+		cmd.Stdin = os.Stdin
+		cmd.Stdout = os.Stdout
+
+		err = cmd.Run()
+		if err != nil {
+			fmt.Println(err)
+		}
 	} else {
 		fmt.Printf("Couldn't find %s\n", instanceId)
 	}
