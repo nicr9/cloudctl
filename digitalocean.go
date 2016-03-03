@@ -58,15 +58,16 @@ func (d DigitalOcean) listInstances() {
 
 	w := new(tabwriter.Writer)
 	w.Init(os.Stdout, 0, 8, 0, '\t', 0)
-	fmt.Fprintln(w, "InstanceID\tPublic IP\tPrivateIP")
-	fmt.Fprintln(w, "---\t---\t---")
+	fmt.Fprintln(w, "DropletID\tName\tPublic IP\tPrivateIP")
+	fmt.Fprintln(w, "---\t---\t---\t---")
 
 	total := 0
 	for _, drop := range list {
 		// Replace public ip with "-" if instance doesn't have one
 		fmt.Fprintf(
 			w,
-			"%s\t%s\t%s\n",
+			"%d\t%s\t%s\t%s\n",
+			drop.ID,
 			drop.Name,
 			"-",
 			"-",
