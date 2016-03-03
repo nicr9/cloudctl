@@ -23,6 +23,9 @@ region: us-west-1
 
 	cmd_ssh       = kingpin.Command("ssh", "Sign into instance over ssh.")
 	ssh_user_host = cmd_ssh.Arg("user_host", "username and instance id, e.g., centos@i-12345678. username will default to $USER").Required().String()
+
+	cmd_rm       = kingpin.Command("rm", "Remove one or more instances.")
+	rm_instances = cmd_rm.Arg("instance", "instance id").Required().Strings()
 )
 
 func main() {
@@ -83,5 +86,13 @@ func main() {
 			fmt.Println(err)
 		}
 		cloud.sshInstance(user, host)
+	case cmd_rm.FullCommand():
+		config := GetConfig(*cloud_name)
+		cloud, err := NewCloud(config)
+		if err != nil {
+			fmt.Println("Couldn't create cloud interface.")
+			fmt.Println(err)
+		}
+		cloud.removeInstances(*rm_instances)
 	}
 }

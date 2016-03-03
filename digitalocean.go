@@ -104,6 +104,17 @@ func (d DigitalOcean) showInstance(instanceId string) {
 func (d DigitalOcean) sshInstance(username, instanceId string) {
 }
 
+func (d DigitalOcean) removeInstances(instances []string) {
+	for _, drop := range instances {
+		id, err := strconv.ParseInt(drop, 10, 0)
+		if err != nil {
+			fmt.Println("Couldn't find", drop)
+			continue
+		}
+		d.svc.Droplets.Delete(int(id))
+	}
+}
+
 func (d DigitalOcean) getDroplet(dropletId string) *godo.Droplet {
 	id, err := strconv.ParseInt(dropletId, 10, 0)
 	if err != nil {

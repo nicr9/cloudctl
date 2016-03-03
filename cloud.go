@@ -9,6 +9,7 @@ type Cloud interface {
 	listInstances()
 	showInstance(instanceId string)
 	sshInstance(username, instanceId string)
+	removeInstances(instances []string)
 }
 
 func NewCloud(config Config) (Cloud, error) {

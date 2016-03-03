@@ -106,6 +106,9 @@ func (a Aws) sshInstance(username, instanceId string) {
 	}
 }
 
+func (a Aws) removeInstances(instances []string) {
+}
+
 func (a Aws) getInstance(instanceId string) *ec2.Instance {
 	params := &ec2.DescribeInstancesInput{
 		Filters: []*ec2.Filter{
