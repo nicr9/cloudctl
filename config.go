@@ -13,10 +13,11 @@ import (
 var config_dir string
 
 type Config struct {
-	Platform  string "platform"
-	AccessKey string "access_key,omitempty"
-	SecretKey string "secret_key,omitempty"
-	Region    string "region"
+	Platform    string "platform"
+	AccessKey   string "access_key,omitempty"
+	SecretKey   string "secret_key,omitempty"
+	AccessToken string "access_token,omitempty"
+	Region      string "region"
 }
 
 func ConfigPath(cloud_name string) string {
