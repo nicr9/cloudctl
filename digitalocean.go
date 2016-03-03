@@ -5,6 +5,8 @@ import (
 	"github.com/digitalocean/godo"
 	"golang.org/x/oauth2"
 	"os"
+	"strconv"
+	"strings"
 	"text/tabwriter"
 )
 
@@ -63,14 +65,26 @@ func (d DigitalOcean) listInstances() {
 
 	total := 0
 	for _, drop := range list {
-		// Replace public ip with "-" if instance doesn't have one
+		// Get lists for public and private networks
+		nets := drop.Networks.V4
+		var public []string
+		var private []string
+		for _, net := range nets {
+			if net.Type == "public" {
+				public = append(public, net.IPAddress)
+			} else if net.Type == "private" {
+				private = append(private, net.IPAddress)
+			}
+		}
+
+		// Print instance details using tabwriter
 		fmt.Fprintf(
 			w,
 			"%d\t%s\t%s\t%s\n",
 			drop.ID,
 			drop.Name,
-			"-",
-			"-",
+			strings.Join(public, ","),
+			strings.Join(private, ","),
 		)
 		total++
 	}
@@ -79,11 +93,27 @@ func (d DigitalOcean) listInstances() {
 }
 
 func (d DigitalOcean) showInstance(instanceId string) {
+	inst := d.getDroplet(instanceId)
+	if inst != nil {
+		fmt.Printf("%#v\n", inst)
+	} else {
+		fmt.Printf("Couldn't find %s\n", instanceId)
+	}
 }
 
 func (d DigitalOcean) sshInstance(username, instanceId string) {
 }
 
-func (d DigitalOcean) getInstance(instanceId string) *godo.Droplet {
-	return nil
+func (d DigitalOcean) getDroplet(dropletId string) *godo.Droplet {
+	id, err := strconv.ParseInt(dropletId, 10, 0)
+	if err != nil {
+		return nil
+	}
+
+	result, _, err := d.svc.Droplets.Get(int(id))
+	if err != nil {
+		return nil
+	}
+
+	return result
 }
