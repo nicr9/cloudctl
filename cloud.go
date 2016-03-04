@@ -6,10 +6,10 @@ import (
 )
 
 type Cloud interface {
-	listInstances()
-	showInstance(instanceId string)
-	sshInstance(username, instanceId string)
-	removeInstances(instances []string)
+	listMachines()
+	showMachine(machineId string)
+	sshMachine(username, machineId string)
+	removeMachines(machines []string)
 }
 
 func NewCloud(config Config) (Cloud, error) {

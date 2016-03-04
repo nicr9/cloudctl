@@ -39,7 +39,7 @@ func NewDigitalOcean(config Config) DigitalOcean {
 	return DigitalOcean{config, svc}
 }
 
-func (d DigitalOcean) listInstances() {
+func (d DigitalOcean) listMachines() {
 	// Get droplet list
 	list := []godo.Droplet{}
 	opt := &godo.ListOptions{}
@@ -70,7 +70,7 @@ func (d DigitalOcean) listInstances() {
 	for _, drop := range list {
 		public, private := getNetworks(&drop)
 
-		// Print instance details using tabwriter
+		// Print machine details using tabwriter
 		fmt.Fprintf(
 			w,
 			"%d\t%s\t%s\t%s\n",
@@ -82,7 +82,7 @@ func (d DigitalOcean) listInstances() {
 		total++
 	}
 	w.Flush()
-	fmt.Printf("---\nFound %d instances.\n", total)
+	fmt.Printf("---\nFound %d machines.\n", total)
 }
 
 func getNetworks(drop *godo.Droplet) (public, private []string) {
@@ -99,21 +99,21 @@ func getNetworks(drop *godo.Droplet) (public, private []string) {
 	return
 }
 
-func (d DigitalOcean) showInstance(instanceId string) {
-	inst := d.getDroplet(instanceId)
+func (d DigitalOcean) showMachine(machineId string) {
+	inst := d.getDroplet(machineId)
 	if inst != nil {
 		fmt.Printf("%#v\n", inst)
 	} else {
-		fmt.Printf("Couldn't find %s\n", instanceId)
+		fmt.Printf("Couldn't find %s\n", machineId)
 	}
 }
 
-func (d DigitalOcean) sshInstance(username, instanceId string) {
-	drop := d.getDroplet(instanceId)
+func (d DigitalOcean) sshMachine(username, machineId string) {
+	drop := d.getDroplet(machineId)
 	if drop != nil {
 		ip, err := drop.PublicIPv4()
 		if err != nil {
-			fmt.Println("Can't find public IP for", instanceId)
+			fmt.Println("Can't find public IP for", machineId)
 			return
 		}
 		userHost := fmt.Sprintf("%s@%s", username, ip)
@@ -139,12 +139,12 @@ func (d DigitalOcean) sshInstance(username, instanceId string) {
 			fmt.Println(err)
 		}
 	} else {
-		fmt.Printf("Couldn't find %s\n", instanceId)
+		fmt.Printf("Couldn't find %s\n", machineId)
 	}
 }
 
-func (d DigitalOcean) removeInstances(instances []string) {
-	for _, drop := range instances {
+func (d DigitalOcean) removeMachines(machines []string) {
+	for _, drop := range machines {
 		id, err := strconv.ParseInt(drop, 10, 0)
 		if err != nil {
 			fmt.Println("Couldn't find", drop)

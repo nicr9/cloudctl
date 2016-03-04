@@ -30,24 +30,24 @@ func NewAws(config Config) Aws {
 	return Aws{config, svc}
 }
 
-func (a Aws) listInstances() {
+func (a Aws) listMachines() {
 	params := &ec2.DescribeInstancesInput{}
 
 	resp, _ := a.svc.DescribeInstances(params)
 	w := new(tabwriter.Writer)
 	w.Init(os.Stdout, 0, 8, 0, '\t', 0)
-	fmt.Fprintln(w, "InstanceID\tPublic IP\tPrivateIP")
+	fmt.Fprintln(w, "Machine ID\tPublic IP\tPrivateIP")
 	fmt.Fprintln(w, "---\t---\t---")
 	total := 0
 	for idx, _ := range resp.Reservations {
 		for _, inst := range resp.Reservations[idx].Instances {
-			// Replace public ip with "-" if instance doesn't have one
+			// Replace public ip with "-" if machine doesn't have one
 			publicIp := "-"
 			if inst.PublicIpAddress != nil {
 				publicIp = *inst.PublicIpAddress
 			}
 
-			// Replace private ip with "-" if instance doesn't have one
+			// Replace private ip with "-" if machine doesn't have one
 			privateIp := "-"
 			if inst.PrivateIpAddress != nil {
 				privateIp = *inst.PrivateIpAddress
@@ -64,20 +64,20 @@ func (a Aws) listInstances() {
 		}
 	}
 	w.Flush()
-	fmt.Printf("---\nFound %d instances.\n", total)
+	fmt.Printf("---\nFound %d machines.\n", total)
 }
 
-func (a Aws) showInstance(instanceId string) {
-	inst := a.getInstance(instanceId)
+func (a Aws) showMachine(machineId string) {
+	inst := a.getMachine(machineId)
 	if inst != nil {
 		fmt.Printf("%#v\n", inst)
 	} else {
-		fmt.Printf("Couldn't find %s\n", instanceId)
+		fmt.Printf("Couldn't find %s\n", machineId)
 	}
 }
 
-func (a Aws) sshInstance(username, instanceId string) {
-	inst := a.getInstance(instanceId)
+func (a Aws) sshMachine(username, machineId string) {
+	inst := a.getMachine(machineId)
 	if inst != nil {
 		userHost := fmt.Sprintf("%s@%s", username, *inst.PrivateIpAddress)
 
@@ -102,20 +102,20 @@ func (a Aws) sshInstance(username, instanceId string) {
 			fmt.Println(err)
 		}
 	} else {
-		fmt.Printf("Couldn't find %s\n", instanceId)
+		fmt.Printf("Couldn't find %s\n", machineId)
 	}
 }
 
-func (a Aws) removeInstances(instances []string) {
+func (a Aws) removeMachines(machines []string) {
 }
 
-func (a Aws) getInstance(instanceId string) *ec2.Instance {
+func (a Aws) getMachine(machineId string) *ec2.Instance {
 	params := &ec2.DescribeInstancesInput{
 		Filters: []*ec2.Filter{
 			&ec2.Filter{
 				Name: aws.String("instance-id"),
 				Values: []*string{
-					&instanceId,
+					&machineId,
 				},
 			},
 		},

@@ -16,16 +16,16 @@ region: us-west-1
 	cmd_init         = kingpin.Command("init", "Create a configuration file for a new cloud.")
 	cmd_config_print = kingpin.Command("config-print", "Print the cloudctl configuration for this cloud.")
 	cmd_config_edit  = kingpin.Command("config-edit", "Edit the cloudctl configuration for this cloud with $EDITOR.")
-	cmd_ls           = kingpin.Command("ls", "List the instances in this cloud.")
+	cmd_ls           = kingpin.Command("ls", "List the machines in this cloud.")
 
-	cmd_show      = kingpin.Command("show", "List details about an instance.")
-	show_instance = cmd_show.Arg("instance", "Target instance id.").Required().String()
+	cmd_show     = kingpin.Command("show", "List details about a machine.")
+	show_machine = cmd_show.Arg("machine", "Target machine id.").Required().String()
 
-	cmd_ssh       = kingpin.Command("ssh", "Sign into instance over ssh.")
-	ssh_user_host = cmd_ssh.Arg("user_host", "username and instance id, e.g., centos@i-12345678. username will default to $USER").Required().String()
+	cmd_ssh       = kingpin.Command("ssh", "Sign into machine over ssh.")
+	ssh_user_host = cmd_ssh.Arg("user_host", "username and machine id, e.g., centos@i-12345678. username will default to $USER").Required().String()
 
-	cmd_rm       = kingpin.Command("rm", "Remove one or more instances.")
-	rm_instances = cmd_rm.Arg("instance", "instance id").Required().Strings()
+	cmd_rm      = kingpin.Command("rm", "Remove one or more machines.")
+	rm_machines = cmd_rm.Arg("machine", "machine id").Required().Strings()
 )
 
 func main() {
@@ -68,7 +68,7 @@ func main() {
 			fmt.Println("Couldn't create cloud interface.")
 			fmt.Println(err)
 		}
-		cloud.showInstance(*show_instance)
+		cloud.showInstance(*show_machine)
 	case cmd_ssh.FullCommand():
 		user_host := strings.Split(*ssh_user_host, "@")
 		var user, host string
@@ -93,6 +93,6 @@ func main() {
 			fmt.Println("Couldn't create cloud interface.")
 			fmt.Println(err)
 		}
-		cloud.removeInstances(*rm_instances)
+		cloud.removeInstances(*rm_machines)
 	}
 }
