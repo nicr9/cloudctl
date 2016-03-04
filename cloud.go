@@ -13,13 +13,13 @@ type Cloud interface {
 }
 
 func NewCloud(config Config) (Cloud, error) {
-	switch config.Platform {
+	switch config.Provider {
 	case "aws":
 		return NewAws(config), nil
 	case "digitalocean":
 		return NewDigitalOcean(config), nil
 	default:
-		msg := fmt.Sprintf("Unrecognised platform: %s", config.Platform)
+		msg := fmt.Sprintf("Unrecognised provider: %s", config.Provider)
 		return nil, errors.New(msg)
 	}
 }

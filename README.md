@@ -28,11 +28,11 @@ This will create a config file `~/.cloudinit/my_aws.yaml` and will add a basic c
 
 ## Config
 
-At the moment the only top level configuration option is `platform` which defaults to `aws`.
+At the moment the only top level configuration option is `provider` which defaults to `aws`.
 
 | Option | Default value | Supported values |
 | --- | --- | --- |
-| platform | aws | aws |
+| provider | aws | aws |
 
 ### AWS
 

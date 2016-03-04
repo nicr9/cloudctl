@@ -13,7 +13,7 @@ import (
 var config_dir string
 
 type Config struct {
-	Platform    string "platform"
+	Provider    string "provider"
 	AccessKey   string "access_key,omitempty"
 	SecretKey   string "secret_key,omitempty"
 	AccessToken string "access_token,omitempty"
@@ -45,10 +45,10 @@ func GetConfig(cloud_name string) Config {
 	}
 
 	// If not defined in config, grab AWS keys from ENV
-	if result.Platform == "aws" && result.AccessKey == "" {
+	if result.Provider == "aws" && result.AccessKey == "" {
 		result.AccessKey = os.Getenv("AWS_ACCESS_KEY_ID")
 	}
-	if result.Platform == "aws" && result.SecretKey == "" {
+	if result.Provider == "aws" && result.SecretKey == "" {
 		result.SecretKey = os.Getenv("AWS_SECRET_ACCESS_KEY")
 	}
 

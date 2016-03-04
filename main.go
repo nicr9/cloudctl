@@ -9,7 +9,7 @@ import (
 )
 
 var (
-	default_config = `platform: aws
+	default_config = `provider: aws
 region: us-west-1
 `
 	cloud_name       = kingpin.Flag("cloud", "Name of public/private cloud").Short('c').Default("default").String()
