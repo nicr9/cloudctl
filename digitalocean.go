@@ -65,17 +65,7 @@ func (d DigitalOcean) listInstances() {
 
 	total := 0
 	for _, drop := range list {
-		// Get lists for public and private networks
-		nets := drop.Networks.V4
-		var public []string
-		var private []string
-		for _, net := range nets {
-			if net.Type == "public" {
-				public = append(public, net.IPAddress)
-			} else if net.Type == "private" {
-				private = append(private, net.IPAddress)
-			}
-		}
+		public, private := getNetworks(&drop)
 
 		// Print instance details using tabwriter
 		fmt.Fprintf(
@@ -90,6 +80,20 @@ func (d DigitalOcean) listInstances() {
 	}
 	w.Flush()
 	fmt.Printf("---\nFound %d instances.\n", total)
+}
+
+func getNetworks(drop *godo.Droplet) (public, private []string) {
+	// Get lists for public and private networks
+	nets := drop.Networks.V4
+	for _, net := range nets {
+		if net.Type == "public" {
+			public = append(public, net.IPAddress)
+		} else if net.Type == "private" {
+			private = append(private, net.IPAddress)
+		}
+	}
+
+	return
 }
 
 func (d DigitalOcean) showInstance(instanceId string) {
