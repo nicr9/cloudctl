@@ -17,6 +17,7 @@ type Config struct {
 	AccessKey   string "access_key,omitempty"
 	SecretKey   string "secret_key,omitempty"
 	AccessToken string "access_token,omitempty"
+	KeyName     string "key_name,omitempty"
 	Region      string "region"
 }
 
