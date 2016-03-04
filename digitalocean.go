@@ -5,6 +5,9 @@ import (
 	"github.com/digitalocean/godo"
 	"golang.org/x/oauth2"
 	"os"
+	"os/exec"
+	"os/user"
+	"path"
 	"strconv"
 	"strings"
 	"text/tabwriter"
@@ -106,6 +109,38 @@ func (d DigitalOcean) showInstance(instanceId string) {
 }
 
 func (d DigitalOcean) sshInstance(username, instanceId string) {
+	drop := d.getDroplet(instanceId)
+	if drop != nil {
+		ip, err := drop.PublicIPv4()
+		if err != nil {
+			fmt.Println("Can't find public IP for", instanceId)
+			return
+		}
+		userHost := fmt.Sprintf("%s@%s", username, ip)
+
+		me, err := user.Current()
+		if err != nil {
+			fmt.Println("Can't determine username details:", err)
+		}
+		keyFile := fmt.Sprintf(".ssh/%s", d.config.KeyName)
+		keyFile = path.Join(me.HomeDir, keyFile)
+
+		if _, err := os.Stat(keyFile); os.IsNotExist(err) {
+			fmt.Println("Can't find private key:", keyFile)
+			return
+		}
+
+		cmd := exec.Command("ssh", "-i", keyFile, userHost)
+		cmd.Stdin = os.Stdin
+		cmd.Stdout = os.Stdout
+
+		err = cmd.Run()
+		if err != nil {
+			fmt.Println(err)
+		}
+	} else {
+		fmt.Printf("Couldn't find %s\n", instanceId)
+	}
 }
 
 func (d DigitalOcean) removeInstances(instances []string) {
