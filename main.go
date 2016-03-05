@@ -60,7 +60,7 @@ func main() {
 			fmt.Println("Couldn't create cloud interface.")
 			fmt.Println(err)
 		}
-		cloud.listInstances()
+		cloud.listMachines()
 	case cmd_show.FullCommand():
 		config := GetConfig(*cloud_name)
 		cloud, err := NewCloud(config)
@@ -68,7 +68,7 @@ func main() {
 			fmt.Println("Couldn't create cloud interface.")
 			fmt.Println(err)
 		}
-		cloud.showInstance(*show_machine)
+		cloud.showMachine(*show_machine)
 	case cmd_ssh.FullCommand():
 		user_host := strings.Split(*ssh_user_host, "@")
 		var user, host string
@@ -85,7 +85,7 @@ func main() {
 			fmt.Println("Couldn't create cloud interface.")
 			fmt.Println(err)
 		}
-		cloud.sshInstance(user, host)
+		cloud.sshMachine(user, host)
 	case cmd_rm.FullCommand():
 		config := GetConfig(*cloud_name)
 		cloud, err := NewCloud(config)
@@ -93,6 +93,6 @@ func main() {
 			fmt.Println("Couldn't create cloud interface.")
 			fmt.Println(err)
 		}
-		cloud.removeInstances(*rm_machines)
+		cloud.removeMachines(*rm_machines)
 	}
 }
