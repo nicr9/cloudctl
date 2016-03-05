@@ -79,7 +79,16 @@ func (a Aws) showMachine(machineId string) {
 func (a Aws) sshMachine(username, machineId string) {
 	inst := a.getMachine(machineId)
 	if inst != nil {
-		userHost := fmt.Sprintf("%s@%s", username, *inst.PrivateIpAddress)
+		var ip string
+		if !a.config.PrivateNetwork && inst.PublicIpAddress != nil {
+			ip = *inst.PublicIpAddress
+		} else if a.config.PrivateNetwork && inst.PrivateIpAddress != nil {
+			ip = *inst.PrivateIpAddress
+		} else {
+			fmt.Println("Can't find an IP for", machineId)
+			return
+		}
+		userHost := fmt.Sprintf("%s@%s", username, ip)
 
 		me, err := user.Current()
 		if err != nil {

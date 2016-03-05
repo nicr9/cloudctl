@@ -13,12 +13,13 @@ import (
 var config_dir string
 
 type Config struct {
-	Provider    string "provider"
-	AccessKey   string "access_key,omitempty"
-	SecretKey   string "secret_key,omitempty"
-	AccessToken string "access_token,omitempty"
-	KeyName     string "key_name,omitempty"
-	Region      string "region"
+	Provider       string "provider"
+	AccessKey      string "access_key,omitempty"
+	SecretKey      string "secret_key,omitempty"
+	AccessToken    string "access_token,omitempty"
+	KeyName        string "key_name,omitempty"
+	PrivateNetwork bool   "private_network,omitempty"
+	Region         string "region"
 }
 
 func ConfigPath(cloud_name string) string {

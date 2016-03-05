@@ -112,8 +112,11 @@ func (d DigitalOcean) sshMachine(username, machineId string) {
 	drop := d.getDroplet(machineId)
 	if drop != nil {
 		ip, err := drop.PublicIPv4()
+		if d.config.PrivateNetwork {
+			ip, err = drop.PrivateIPv4()
+		}
 		if err != nil {
-			fmt.Println("Can't find public IP for", machineId)
+			fmt.Println("Can't find an IP for", machineId)
 			return
 		}
 		userHost := fmt.Sprintf("%s@%s", username, ip)
