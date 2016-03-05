@@ -116,6 +116,14 @@ func (a Aws) sshMachine(username, machineId string) {
 }
 
 func (a Aws) removeMachines(machines []string) {
+	var instances []*string
+	for _, inst := range machines {
+		instances = append(instances, &inst)
+	}
+	filter := &ec2.TerminateInstancesInput{
+		InstanceIds: instances,
+	}
+	a.svc.TerminateInstances(filter)
 }
 
 func (a Aws) getMachine(machineId string) *ec2.Instance {
